@@ -1,0 +1,31 @@
+{
+  "cliente": 150,
+  "sem-indice": {
+    "tamanho_bytes": 0,
+    "pedidos": 20,
+    "tempos_ms": [
+      3.896,
+      4.099,
+      3.859,
+      3.848,
+      3.807
+    ],
+    "mediana_ms": 3.859,
+    "usou_indice": false,
+    "teve_sort": true
+  },
+  "com-indice": {
+    "tamanho_bytes": 4079616,
+    "pedidos": 20,
+    "tempos_ms": [
+      0.122,
+      0.082,
+      0.105,
+      0.069,
+      0.06
+    ],
+    "mediana_ms": 0.082,
+    "usou_indice": true,
+    "teve_sort": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "cenario": "indice",
+  "variante": "sem-indice",
+  "vus": 200,
+  "repeticao": 2,
+  "duracao_s": 12,
+  "janela_s": 12.186,
+  "requisicoes": 12566,
+  "vazao_rps": 1031.183325127195,
+  "media_ms": 192.1550532070673,
+  "p95_ms": 256.674175,
+  "p99_ms": 368.25298000000004,
+  "erro_pct": 0,
+  "hits": 0,
+  "misses": 0,
+  "hit_media_ms": null,
+  "miss_media_ms": null
+}

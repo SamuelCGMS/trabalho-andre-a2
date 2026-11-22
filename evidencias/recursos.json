@@ -1,0 +1,52 @@
+[
+  {
+    "variante": "sem-cache",
+    "vus": 100,
+    "janela_observacao_s": 2.78,
+    "java_cpu_pct_de_um_nucleo": 15.18,
+    "java_memoria_mib": 559.31,
+    "docker": [
+      {
+        "servico": "PostgreSQL",
+        "cpu_pct": 1134.03,
+        "memoria": "245MiB"
+      },
+      {
+        "servico": "Redis",
+        "cpu_pct": 0.33,
+        "memoria": "10.54MiB"
+      }
+    ],
+    "postgres_delta": {
+      "tuplas_retornadas": 176977274,
+      "tuplas_buscadas": 33456,
+      "blocos_hit": 1862978,
+      "blocos_lidos": 13
+    }
+  },
+  {
+    "variante": "quente",
+    "vus": 100,
+    "janela_observacao_s": 2.575,
+    "java_cpu_pct_de_um_nucleo": 332.48,
+    "java_memoria_mib": 562.11,
+    "docker": [
+      {
+        "servico": "PostgreSQL",
+        "cpu_pct": 14.34,
+        "memoria": "177.6MiB"
+      },
+      {
+        "servico": "Redis",
+        "cpu_pct": 21.22,
+        "memoria": "10.91MiB"
+      }
+    ],
+    "postgres_delta": {
+      "tuplas_retornadas": 2095417,
+      "tuplas_buscadas": 150,
+      "blocos_hit": 24335,
+      "blocos_lidos": 0
+    }
+  }
+]

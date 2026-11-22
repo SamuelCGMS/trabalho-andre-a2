@@ -1,0 +1,18 @@
+{
+  "cenario": "cache",
+  "variante": "sem-cache",
+  "vus": 50,
+  "repeticao": 1,
+  "duracao_s": 12,
+  "janela_s": 12.281,
+  "requisicoes": 1181,
+  "vazao_rps": 96.16480742610536,
+  "media_ms": 514.7362888230314,
+  "p95_ms": 776.4026,
+  "p99_ms": 961.8379600000001,
+  "erro_pct": 0,
+  "hits": 0,
+  "misses": 0,
+  "hit_media_ms": null,
+  "miss_media_ms": null
+}

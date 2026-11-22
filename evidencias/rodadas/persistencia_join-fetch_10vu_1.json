@@ -1,0 +1,18 @@
+{
+  "cenario": "persistencia",
+  "variante": "join-fetch",
+  "vus": 10,
+  "repeticao": 1,
+  "duracao_s": 12,
+  "janela_s": 12.001,
+  "requisicoes": 20888,
+  "vazao_rps": 1740.521623198067,
+  "media_ms": 5.551478715051751,
+  "p95_ms": 8.260839999999993,
+  "p99_ms": 11.1576,
+  "erro_pct": 0,
+  "hits": 0,
+  "misses": 0,
+  "hit_media_ms": null,
+  "miss_media_ms": null
+}

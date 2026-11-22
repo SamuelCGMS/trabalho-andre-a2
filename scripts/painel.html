@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resultados dos experimentos | A2</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --fundo: #f6f6f2;
+      --painel: #fff;
+      --texto: #172126;
+      --secundario: #4f5c61;
+      --linha: #d4d8d4;
+      --destaque: #08675f;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .pagina { width: min(100% - 3rem, 78rem); margin: 0 auto; padding: 2.75rem 0 3rem; }
+    .cabecalho, .controles, .titulo-grafico { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .curso { font-size: .9rem; color: var(--secundario); }
+    h1, h2, p, figure { margin: 0; }
+    h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.12; letter-spacing: -.04em; margin: .45rem 0; }
+    h2 { font-size: 1.2rem; line-height: 1.25; letter-spacing: -.02em; }
+    .descricao { color: var(--secundario); line-height: 1.5; }
+    a { color: var(--destaque); text-underline-offset: .18em; font-weight: 600; }
+    a:hover { text-decoration-thickness: .13em; }
+    .download { display: inline-flex; min-height: 2.75rem; align-items: center; padding: .4rem .95rem;
+                border: 1px solid currentColor; border-radius: .5rem; background: var(--painel);
+                white-space: nowrap; text-decoration: none; }
+    :where(a, button, select, [tabindex]):focus-visible { outline: 3px solid var(--destaque); outline-offset: 3px; }
+    .controles { margin: 1.75rem 0 1.15rem; border-bottom: 1px solid var(--linha); align-items: stretch; }
+    .cenarios, .filtro { display: flex; align-items: center; }
+    .filtro { gap: .65rem; padding-bottom: .4rem; }
+    .filtro label { font-size: .9rem; color: var(--secundario); }
+    button, select { font: inherit; color: inherit; }
+    button { background: none; border: 0; border-bottom: 3px solid transparent; padding: .75rem .95rem; cursor: pointer; }
+    button[aria-pressed="true"] { border-bottom-color: var(--destaque); color: var(--destaque); font-weight: 700; }
+    button:hover { background: #eef1ed; }
+    select { min-height: 2.5rem; padding: .4rem .65rem; border: 1px solid #9ca7a4; border-radius: .5rem; background: var(--painel); }
+    .painel { background: var(--painel); border: 1px solid var(--linha); border-radius: .5rem; padding: 1rem 1.2rem; }
+    .titulo-grafico { align-items: baseline; flex-wrap: wrap; margin: 0 0 .6rem; }
+    .rolagem { overflow: auto; max-inline-size: 100%; }
+    .figura img { display: block; inline-size: 100%; block-size: auto; min-inline-size: 38rem; }
+    figcaption { color: var(--secundario); font-size: .82rem; margin-top: .25rem; line-height: 1.45; }
+    .instrucao-celular { display: none; }
+    .medicoes { margin-top: 1rem; }
+    .tabela { max-block-size: 31rem; margin-top: .75rem; }
+    table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .91rem; }
+    th, td { padding: .63rem .8rem; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--linha); font-variant-numeric: tabular-nums; }
+    thead { position: sticky; inset-block-start: 0; z-index: 2; }
+    thead th { background: #edf0ed; color: #38464a; }
+    tbody th { position: sticky; inset-inline-start: 0; background: var(--painel); font-weight: 600; z-index: 1; }
+    tr :first-child { text-align: left; }
+    tbody tr:hover :is(th, td) { background: #f3f7f4; }
+    .atualizacao { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+    @media (max-width: 43rem) {
+      .pagina { width: calc(100% - 1.75rem); padding-top: 1.4rem; }
+      .cabecalho, .controles { flex-wrap: wrap; }
+      .controles { gap: .45rem; }
+      .painel { padding: .85rem; }
+      .instrucao-celular { display: block; }
+      button { padding-inline: .6rem; }
+    }
+    @media print {
+      :root { background: white; }
+      .pagina { width: 100%; }
+      [download], .controles { display: none; }
+      .rolagem { overflow: visible; max-block-size: none; }
+      .figura img { min-inline-size: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="pagina">
+    <header class="cabecalho">
+      <div>
+        <p class="curso">A2 · Otimização de Web Services</p>
+        <h1>Resultados dos experimentos</h1>
+        <p class="descricao" id="volume"></p>
+      </div>
+      <a class="download" id="baixar-csv" href="consolidado.csv" download="consolidado.csv">Baixar CSV</a>
+    </header>
+
+    <div class="controles">
+      <div class="cenarios" id="cenarios" role="group" aria-label="Cenário"></div>
+      <div class="filtro">
+        <label for="metrica">Métrica</label>
+        <select id="metrica"></select>
+      </div>
+    </div>
+
+    <figure class="painel">
+      <div class="titulo-grafico">
+        <h2 id="titulo-grafico"></h2>
+        <a id="baixar" download>Baixar gráfico</a>
+      </div>
+      <div class="rolagem figura" role="region" aria-labelledby="titulo-grafico" tabindex="0">
+        <img id="grafico" width="1710" height="480" alt="" aria-describedby="nota-grafico">
+      </div>
+      <figcaption id="nota-grafico"></figcaption>
+      <p class="descricao instrucao-celular">Deslize o gráfico para ver todas as cargas.</p>
+    </figure>
+
+    <section class="painel medicoes">
+      <h2 id="titulo-tabela">Medições por variante</h2>
+      <div class="rolagem tabela" role="region" aria-labelledby="titulo-tabela" tabindex="0">
+        <table aria-labelledby="titulo-tabela">
+          <thead>
+            <tr>
+              <th scope="col">Variante</th><th scope="col">VUs</th>
+              <th scope="col">Média (ms)</th><th scope="col">p95 (ms)</th><th scope="col">p99 (ms)</th>
+              <th scope="col">req/s</th><th scope="col">Erros (%)</th>
+            </tr>
+          </thead>
+          <tbody id="medicoes"></tbody>
+        </table>
+      </div>
+    </section>
+    <p class="atualizacao" id="atualizacao" role="status"></p>
+    <noscript><p>Use o CSV para consultar os dados com o JavaScript desativado.</p></noscript>
+  </main>
+  <script type="application/json" id="dados">__A2_DADOS__</script>
+  <script>
+    const dados = JSON.parse(document.getElementById('dados').textContent);
+    const contador = new Intl.NumberFormat('pt-BR');
+    const numero = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const metrica = document.getElementById('metrica');
+    const cenarios = document.getElementById('cenarios');
+    const grafico = document.getElementById('grafico');
+    const tabela = document.getElementById('medicoes');
+    document.getElementById('baixar-csv').href = dados.csv;
+    let atual = Object.keys(dados.cenarios)[0];
+
+    document.getElementById('volume').textContent =
+      contador.format(dados.rodadas) + ' rodadas · ' + dados.cargas.length +
+      ' níveis de carga · ' + dados.repeticoes + ' repetições por combinação';
+
+    for (const [chave, label] of Object.entries(dados.metricas)) {
+      metrica.append(new Option(label, chave));
+    }
+    metrica.value = 'p95_ms';
+
+    for (const [chave, cenario] of Object.entries(dados.cenarios)) {
+      const botao = document.createElement('button');
+      botao.type = 'button';
+      botao.textContent = cenario.nome;
+      botao.dataset.cenario = chave;
+      botao.addEventListener('click', () => {
+        if (atual === chave) return;
+        atual = chave;
+        atualizarTabela();
+        atualizarGrafico();
+      });
+      cenarios.append(botao);
+    }
+
+    function atualizarGrafico(anunciar = true) {
+      const campo = metrica.value;
+      const titulo = dados.metricas[campo] + ' por carga';
+      const nome = dados.cenarios[atual].nome;
+      const arquivo = atual + '-' + campo.replaceAll('_', '-') + '.png';
+      document.getElementById('titulo-grafico').textContent = titulo;
+      const baixar = document.getElementById('baixar');
+      baixar.href = dados.arquivos[arquivo];
+      baixar.download = arquivo;
+      grafico.alt = nome + '. ' + titulo + '. Os valores estão na tabela.';
+      grafico.src = dados.arquivos[arquivo];
+      document.getElementById('nota-grafico').textContent = campo === 'p95_ms'
+        ? 'Mediana entre rodadas. As barras verticais mostram o menor e o maior p95 medidos.'
+        : 'Mediana da métrica entre as rodadas de cada combinação.';
+      if (anunciar) document.getElementById('atualizacao').textContent = nome + '. ' + titulo + '.';
+    }
+
+    function atualizarTabela() {
+      for (const botao of cenarios.querySelectorAll('button')) {
+        botao.setAttribute('aria-pressed', String(atual === botao.dataset.cenario));
+      }
+      const linhas = dados.cenarios[atual].linhas.map(linha => {
+        const tr = document.createElement('tr');
+        const th = document.createElement('th');
+        th.scope = 'row';
+        th.textContent = linha.rotulo;
+        tr.append(th);
+        const valores = [contador.format(linha.vus), ...[
+          'media_ms', 'p95_ms', 'p99_ms', 'vazao_rps', 'erro_pct',
+        ].map(campo => numero.format(linha[campo]))];
+        for (const valor of valores) {
+          const td = document.createElement('td');
+          td.textContent = valor;
+          tr.append(td);
+        }
+        return tr;
+      });
+      tabela.replaceChildren(...linhas);
+    }
+
+    metrica.addEventListener('change', () => atualizarGrafico());
+    atualizarTabela();
+    atualizarGrafico(false);
+  </script>
+</body>
+</html>

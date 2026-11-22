@@ -1,0 +1,36 @@
+SQL observado no Hibernate, limite de 3 pedidos por requisição.
+
+GET /api/pedidos/lazy?limit=3
+7 comandos SQL. 9 itens inicializados.
+
+1× select pl1_0.id,pl1_0.cliente_id,pl1_0.data_pedido,pl1_0.status,pl1_0.valor_total from pedido pl1_0 order by pl1_0.id fetch first ? rows only
+
+3× select i1_0.pedido_id,i1_0.id,i1_0.preco_unitario,i1_0.produto_id,i1_0.quantidade from item_pedido i1_0 where i1_0.pedido_id=? order by i1_0.id
+
+3× select c1_0.id,c1_0.cidade,c1_0.email,c1_0.nome from cliente c1_0 where c1_0.id=?
+
+GET /api/pedidos/eager?limit=3&incluirItens=false
+7 comandos SQL. 9 itens inicializados.
+
+1× select pe1_0.id,pe1_0.cliente_id,pe1_0.data_pedido,pe1_0.status,pe1_0.valor_total from pedido pe1_0 order by pe1_0.id fetch first ? rows only
+
+3× select c1_0.id,c1_0.cidade,c1_0.email,c1_0.nome from cliente c1_0 where c1_0.id=?
+
+3× select i1_0.pedido_id,i1_0.id,i1_0.preco_unitario,i1_0.produto_id,i1_0.quantidade from item_pedido i1_0 where i1_0.pedido_id=? order by i1_0.id
+
+GET /api/pedidos/join-fetch?limit=3
+2 comandos SQL. 9 itens inicializados.
+
+1× select pl1_0.id from pedido pl1_0 order by pl1_0.id fetch first ? rows only
+
+1× select pl1_0.id,c1_0.id,c1_0.cidade,c1_0.email,c1_0.nome,pl1_0.data_pedido,i1_0.pedido_id,i1_0.id,i1_0.preco_unitario,i1_0.produto_id,i1_0.quantidade,pl1_0.status,pl1_0.valor_total from pedido pl1_0 join cliente c1_0 on c1_0.id=pl1_0.cliente_id left join item_pedido i1_0 on pl1_0.id=i1_0.pedido_id where pl1_0.id in (?,?,?) order by pl1_0.id,i1_0.id
+
+GET /api/pedidos/dto?limit=3
+1 comandos SQL. 0 itens inicializados.
+
+1× select pl1_0.id,c1_0.nome,pl1_0.data_pedido,pl1_0.status,pl1_0.valor_total,count(i1_0.id) from pedido pl1_0 join cliente c1_0 on c1_0.id=pl1_0.cliente_id left join item_pedido i1_0 on pl1_0.id=i1_0.pedido_id group by pl1_0.id,c1_0.nome,pl1_0.data_pedido,pl1_0.status,pl1_0.valor_total order by pl1_0.id fetch first ? rows only
+
+GET /api/pedidos/dto-nativo?limit=3
+1 comandos SQL. 0 itens inicializados.
+
+1× SELECT p.id, c.nome, p.data_pedido, p.status, p.valor_total, COUNT(i.id) FROM (SELECT id, cliente_id, data_pedido, status, valor_total FROM pedido ORDER BY id LIMIT ?) p JOIN cliente c ON c.id = p.cliente_id LEFT JOIN item_pedido i ON i.pedido_id = p.id GROUP BY p.id, c.nome, p.data_pedido, p.status, p.valor_total ORDER BY p.id

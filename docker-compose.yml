@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16
+    shm_size: 512mb
+    environment:
+      POSTGRES_DB: a2db
+      POSTGRES_USER: a2
+      POSTGRES_PASSWORD: a2pass
+    ports:
+      - "127.0.0.1:${A2_POSTGRES_PORT:-15432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U a2 -d a2db"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  redis:
+    image: redis:7
+    ports:
+      - "127.0.0.1:${A2_REDIS_PORT:-16379}:6379"
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+volumes:
+  pgdata:

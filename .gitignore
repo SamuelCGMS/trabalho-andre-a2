@@ -1,0 +1,9 @@
+target/
+.idea/
+*.iml
+.vscode/
+__pycache__/
+.venv/
+.env
+*.log
+resultados/

@@ -1,0 +1,18 @@
+{
+  "cenario": "persistencia",
+  "variante": "lazy",
+  "vus": 100,
+  "repeticao": 1,
+  "duracao_s": 12,
+  "janela_s": 12.337,
+  "requisicoes": 3329,
+  "vazao_rps": 269.83869660371244,
+  "media_ms": 365.4399657254426,
+  "p95_ms": 572.89488,
+  "p99_ms": 701.9265959999998,
+  "erro_pct": 0,
+  "hits": 0,
+  "misses": 0,
+  "hit_media_ms": null,
+  "miss_media_ms": null
+}

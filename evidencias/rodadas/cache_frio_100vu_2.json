@@ -1,0 +1,18 @@
+{
+  "cenario": "cache",
+  "variante": "frio",
+  "vus": 100,
+  "repeticao": 2,
+  "duracao_s": 12,
+  "janela_s": 12.004,
+  "requisicoes": 139113,
+  "vazao_rps": 11588.887037654116,
+  "media_ms": 8.110034855117659,
+  "p95_ms": 11.9995,
+  "p99_ms": 18.4202,
+  "erro_pct": 0,
+  "hits": 138976,
+  "misses": 137,
+  "hit_media_ms": 7.408734639074426,
+  "miss_media_ms": 719.5253547445257
+}

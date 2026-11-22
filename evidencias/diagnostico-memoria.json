@@ -1,0 +1,27 @@
+{
+  "descricao": "Diagnóstico da agregação por categoria com memória compartilhada de 64 MiB.",
+  "rodadas": [
+    {
+      "vus": 100,
+      "requisicoes": 2011,
+      "erro_pct": 39.681750372948784
+    },
+    {
+      "vus": 10,
+      "requisicoes": 1260,
+      "erro_pct": 0
+    },
+    {
+      "vus": 200,
+      "requisicoes": 2029,
+      "erro_pct": 38.93543617545589
+    },
+    {
+      "vus": 50,
+      "requisicoes": 1843,
+      "erro_pct": 37.16766142159523
+    }
+  ],
+  "mensagem_postgresql": "ERROR: could not resize shared memory segment: No space left on device",
+  "configuracao_bateria_valida_mib": 512
+}

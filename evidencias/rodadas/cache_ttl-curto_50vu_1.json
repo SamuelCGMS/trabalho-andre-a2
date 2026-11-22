@@ -1,0 +1,18 @@
+{
+  "cenario": "cache",
+  "variante": "ttl-curto",
+  "vus": 50,
+  "repeticao": 1,
+  "duracao_s": 12,
+  "janela_s": 12.162,
+  "requisicoes": 58060,
+  "vazao_rps": 4773.885874033876,
+  "media_ms": 10.028257674818992,
+  "p95_ms": 11.000105,
+  "p99_ms": 251.62946199999845,
+  "erro_pct": 0,
+  "hits": 57385,
+  "misses": 675,
+  "hit_media_ms": 5.261935645203623,
+  "miss_media_ms": 415.2362423703704
+}

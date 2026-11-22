@@ -1,0 +1,36 @@
+{
+  "inicio": "2026-11-21T23:26:01-03:00",
+  "sistema": "Windows",
+  "versaoSistema": "10.0.19045",
+  "cpusLogicas": 12,
+  "k6": "k6.exe v1.5.0 (commit/7961cefa12, go1.25.5, windows/amd64)",
+  "api": {
+    "springBoot": "3.3.5",
+    "poolMaximo": 30,
+    "postgresql": "16.16 (Debian 16.16-1.pgdg13+1)",
+    "hibernate": "6.5.3.Final",
+    "java": "17.0.21.1+2-LTS"
+  },
+  "volume": {
+    "categoria": 20,
+    "cliente": 5000,
+    "produto": 10000,
+    "pedido": 100000,
+    "item_pedido": 300000
+  },
+  "cargas": [
+    10,
+    50,
+    100,
+    200
+  ],
+  "duracao_s": 12,
+  "repeticoes": 2,
+  "limite": 30,
+  "cenarios": [
+    "cache",
+    "persistencia",
+    "indice"
+  ],
+  "rodadas_esperadas": 72
+}
