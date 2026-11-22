@@ -3,7 +3,6 @@ import argparse
 from base64 import b64encode
 import csv
 import json
-import shutil
 from collections import defaultdict
 from pathlib import Path
 from statistics import median
@@ -154,8 +153,9 @@ def main():
         for campo in METRICAS:
             arquivos.append(gerar_figura(chave, cenario["linhas"], campo, graficos))
 
-    if entrada.resolve() != (saida / "consolidado.csv").resolve():
-        shutil.copyfile(entrada, saida / "consolidado.csv")
+    csv_publicado = saida / "consolidado.csv"
+    if entrada.resolve() != csv_publicado.resolve():
+        csv_publicado.write_text(entrada.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
     registros = [linha for cenario in painel["cenarios"].values() for linha in cenario["linhas"]]
     with (saida / "comparativo.csv").open("w", encoding="utf-8", newline="") as arquivo:
         escritor = csv.DictWriter(arquivo, fieldnames=list(registros[0]))
@@ -166,7 +166,7 @@ def main():
         png.name: "data:image/png;base64," + b64encode(png.read_bytes()).decode("ascii")
         for png in arquivos
     }
-    painel["csv"] = "data:text/csv;charset=utf-8;base64," + b64encode(entrada.read_bytes()).decode("ascii")
+    painel["csv"] = "data:text/csv;charset=utf-8;base64," + b64encode(csv_publicado.read_bytes()).decode("ascii")
     molde = Path(__file__).with_name("painel.html").read_text(encoding="utf-8")
     dados = json.dumps(painel, ensure_ascii=False).replace("<", "\\u003c")
     (saida / "painel.html").write_text(molde.replace("__A2_DADOS__", dados), encoding="utf-8")

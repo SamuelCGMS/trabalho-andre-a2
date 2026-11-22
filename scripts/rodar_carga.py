@@ -149,7 +149,7 @@ def main():
             api(args.base_url, "admin/indice", "DELETE")
     temporario = pasta / "consolidado.tmp"
     with temporario.open("w", encoding="utf-8", newline="") as arquivo:
-        gravador = csv.DictWriter(arquivo, fieldnames=CAMPOS)
+        gravador = csv.DictWriter(arquivo, fieldnames=CAMPOS, lineterminator="\n")
         gravador.writeheader()
         gravador.writerows(linhas)
     temporario.replace(pasta / "consolidado.csv")

@@ -20,7 +20,7 @@ O Spring Boot recebe as requisições. Hibernate/JPA consulta o PostgreSQL. As r
 | Pedido · vinculado a um cliente | 100.000 |
 | Item de pedido · vincula pedido e produto | 300.000 |
 
-O [schema](src/main/resources/schema.sql) define as chaves e o [gerador de dados](src/main/java/br/edu/uva/otimizacao/config/DataSeeder.java) preenche as tabelas automaticamente no primeiro início. Cada pedido tem 1 a 5 itens. O conjunto inclui clientes, datas, categorias e estados de pedido distintos.
+O esquema define as chaves e a geração automática preenche as tabelas no primeiro início. Cada pedido tem 1 a 5 itens. O conjunto inclui clientes, datas, categorias e estados de pedido distintos. [Esquema](src/main/resources/schema.sql) · [Geração de dados](src/main/java/br/edu/uva/otimizacao/config/DataSeeder.java)
 
 | Operação | Rota |
 |---|---|
@@ -32,7 +32,7 @@ O [schema](src/main/resources/schema.sql) define as chaves e o [gerador de dados
 
 ## 3. Cache
 
-**Política.** Redis oferece armazenamento compartilhado e expiração por chave. Um hit retorna o JSON armazenado. Um miss busca o valor no PostgreSQL e o grava com TTL. As informações do produto são lidas no catálogo e preço e estoque podem variar, então o padrão é **60 s**. A agregação por categoria é mais custosa, muda com os dados do catálogo e das vendas e admite defasagem maior em uma visão analítica. Seu TTL é **300 s**. Esses valores são decisões de projeto para usos simulados. Uma entrada expira a partir da gravação.
+**Política.** Redis oferece armazenamento compartilhado e expiração por chave. Um hit retorna o JSON armazenado. Um miss busca o valor no PostgreSQL e o grava com TTL. O catálogo repete leituras dos mesmos produtos. Preço e estoque podem variar, então o TTL padrão é **60 s**. Visões analíticas podem repetir a agregação da mesma categoria. Essa consulta é mais custosa e tolera uma defasagem maior. Seu TTL é **300 s**. Esses valores são decisões de projeto para usos simulados. Uma entrada expira a partir da gravação.
 
 ```java
 T valor = desserializar(json, tipo);
@@ -132,7 +132,7 @@ CREATE INDEX idx_pedido_cliente_data
 ON pedido (cliente_id, data_pedido DESC, id DESC);
 ```
 
-Cada estado teve duas execuções de aquecimento e cinco `EXPLAIN (ANALYZE, BUFFERS)` registrados. A listagem retornou o mesmo conteúdo.
+Cada estado teve duas execuções de aquecimento e cinco `EXPLAIN (ANALYZE, BUFFERS)` registrados. As chaves primárias e o índice de itens por pedido foram mantidos nos dois estados. A listagem retornou o mesmo conteúdo.
 
 | Observação | Sem índice | Com índice |
 | --- | --- | --- |

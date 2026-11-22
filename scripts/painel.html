@@ -113,7 +113,7 @@
             <tr>
               <th scope="col">Variante</th><th scope="col">VUs</th>
               <th scope="col">Média (ms)</th><th scope="col">p95 (ms)</th><th scope="col">p99 (ms)</th>
-              <th scope="col">req/s</th><th scope="col">Erros (%)</th>
+              <th scope="col">req/s</th><th scope="col">Erros (%)</th><th id="hits-col" scope="col">Hits (%)</th>
             </tr>
           </thead>
           <tbody id="medicoes"></tbody>
@@ -128,6 +128,8 @@
     const dados = JSON.parse(document.getElementById('dados').textContent);
     const contador = new Intl.NumberFormat('pt-BR');
     const numero = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const umaCasa = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const tresCasas = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
     const metrica = document.getElementById('metrica');
     const cenarios = document.getElementById('cenarios');
     const grafico = document.getElementById('grafico');
@@ -176,6 +178,8 @@
     }
 
     function atualizarTabela() {
+      const temCache = atual === 'cache';
+      document.getElementById('hits-col').hidden = !temCache;
       for (const botao of cenarios.querySelectorAll('button')) {
         botao.setAttribute('aria-pressed', String(atual === botao.dataset.cenario));
       }
@@ -186,8 +190,10 @@
         th.textContent = linha.rotulo;
         tr.append(th);
         const valores = [contador.format(linha.vus), ...[
-          'media_ms', 'p95_ms', 'p99_ms', 'vazao_rps', 'erro_pct',
-        ].map(campo => numero.format(linha[campo]))];
+          'media_ms', 'p95_ms', 'p99_ms',
+        ].map(campo => numero.format(linha[campo])),
+        umaCasa.format(linha.vazao_rps), tresCasas.format(linha.erro_pct)];
+        if (temCache) valores.push(linha.taxa_hit_pct === null ? '—' : numero.format(linha.taxa_hit_pct));
         for (const valor of valores) {
           const td = document.createElement('td');
           td.textContent = valor;
