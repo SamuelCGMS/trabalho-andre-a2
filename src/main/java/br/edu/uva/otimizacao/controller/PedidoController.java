@@ -24,7 +24,7 @@ public class PedidoController {
         this.nativo = nativo;
     }
 
-    // ---- ITEM 2: estrategias de carregamento (mesmo dado, formas diferentes de buscar) ----
+    // Estratégias para consultar os pedidos e comparar o custo de cada uma.
 
     @GetMapping("/lazy")
     public ResultadoExperimento<PedidoDetalheDTO> lazy(@RequestParam(defaultValue = "50") int limit,
@@ -53,14 +53,14 @@ public class PedidoController {
         return service.dtoNativo(limitar(limit));
     }
 
-    // ---- ITEM 2 (indices): consulta com filtro + ordenacao ----
+    // Consulta usada para medir o efeito do índice composto.
 
     @GetMapping("/cliente/{clienteId}")
     public ResultadoExperimento<PedidoSimplesDTO> doCliente(@PathVariable Long clienteId) {
         return service.doCliente(clienteId);
     }
 
-    /** Executa EXPLAIN (ANALYZE, BUFFERS) da consulta acima e devolve o plano de execucao. */
+    /** Executa EXPLAIN (ANALYZE, BUFFERS) da consulta acima e devolve o plano de execução. */
     @GetMapping("/cliente/{clienteId}/explain")
     public List<String> explain(@PathVariable Long clienteId) {
         return nativo.explainPedidosDoCliente(clienteId);

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 
-/** Segunda operacao cacheavel: agregacao PESADA (custo alto no banco, baixa volatilidade). */
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaController {

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Endpoints de apoio aos experimentos (laboratorio academico - NAO usar assim em producao). */
+/** Rotas do laboratório. Permitem limpar o cache e alterar o índice sem autenticação. */
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -60,7 +60,7 @@ public class AdminController {
         return Map.of("indice", INDICE, "estado", "REMOVIDO");
     }
 
-    /** Quantidade de registros por tabela (para registrar no relatorio). */
+    /** Quantidade de registros por tabela (para registrar no relatório). */
     @GetMapping("/contagens")
     public Map<String, Long> contagens() {
         Map<String, Long> mapa = new LinkedHashMap<>();

@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * Popula o banco automaticamente na primeira execucao (se a tabela pedido estiver vazia).
- * Usa generate_series do PostgreSQL: gera centenas de milhares de linhas em segundos.
- * Dados deterministicos (sem random): todo mundo obtem o mesmo conjunto.
+ * Preenche o banco quando a carga está habilitada e ainda não há pedidos.
+ * Com os mesmos parâmetros, generate_series e as fórmulas abaixo recriam a mesma base.
  */
 @Component
 @ConditionalOnProperty(name = "app.seed.habilitado", havingValue = "true", matchIfMissing = true)
@@ -48,7 +47,7 @@ public class DataSeeder implements CommandLineRunner {
                 clientes, produtos, pedidos);
         long inicio = System.currentTimeMillis();
 
-        // Tudo em UMA transacao: se falhar no meio, nada fica pela metade.
+        // A carga fica em uma só transação para evitar uma base preenchida pela metade.
         tx.executeWithoutResult(status -> {
             exec("""
                 INSERT INTO categoria (id, nome)
@@ -72,7 +71,7 @@ public class DataSeeder implements CommandLineRunner {
                 FROM generate_series(1, {PRODUTOS}) g
                 """);
 
-            // Pedidos espalhados por ~4 anos, clientes distribuidos de forma uniforme
+            // Pedidos espalhados por ~4 anos, clientes distribuídos de forma uniforme
             exec("""
                 INSERT INTO pedido (id, cliente_id, data_pedido, status, valor_total)
                 SELECT g,
@@ -85,7 +84,7 @@ public class DataSeeder implements CommandLineRunner {
                 FROM generate_series(1, {PEDIDOS}) g
                 """);
 
-            // De 1 a 5 itens por pedido (media 3)
+            // De 1 a 5 itens por pedido (média 3)
             exec("""
                 INSERT INTO item_pedido (pedido_id, produto_id, quantidade, preco_unitario)
                 SELECT p.id, pr.id, 1 + ((p.id + n) % 5), pr.preco
@@ -101,14 +100,14 @@ public class DataSeeder implements CommandLineRunner {
                 WHERE s.pedido_id = p.id
                 """);
 
-            // Ajusta as sequences (ids foram inseridos manualmente)
+            // Avança as sequências para que os próximos inserts não repitam os IDs da carga.
             for (String t : new String[]{"categoria", "cliente", "produto", "pedido"}) {
                 jdbc.queryForObject("SELECT setval(pg_get_serial_sequence('" + t + "','id'), (SELECT MAX(id) FROM " + t + "))",
                         Long.class);
             }
         });
 
-        jdbc.execute("ANALYZE");   // estatisticas atualizadas para o planejador de consultas
+        jdbc.execute("ANALYZE");   // estatísticas atualizadas para o planejador de consultas
         log.info("Carga concluida em {} ms.", System.currentTimeMillis() - inicio);
     }
 

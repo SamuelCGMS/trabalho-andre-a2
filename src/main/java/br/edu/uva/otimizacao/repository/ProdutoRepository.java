@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    /** Uma unica query (JOIN com categoria) - evita um SELECT extra ao ler o nome da categoria. */
+    /** Uma única query (JOIN com categoria) - evita um SELECT extra ao ler o nome da categoria. */
     @Query("select p from Produto p join fetch p.categoria where p.id = :id")
     Optional<Produto> buscarComCategoria(@Param("id") Long id);
 }

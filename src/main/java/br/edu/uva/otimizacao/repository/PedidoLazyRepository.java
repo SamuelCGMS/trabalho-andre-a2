@@ -11,11 +11,10 @@ import java.util.List;
 
 public interface PedidoLazyRepository extends JpaRepository<PedidoLazy, Long> {
 
-    // ---- Versao LAZY (origem do problema N+1) ----
     @Query("select p from PedidoLazy p order by p.id")
     List<PedidoLazy> primeiros(Pageable pageable);
 
-    // ---- Otimizacao 1: JOIN FETCH em 2 passos (evita paginacao em memoria com colecao) ----
+    // Paginar só os IDs permite usar JOIN FETCH nos itens sem paginar em memória.
     @Query("select p.id from PedidoLazy p order by p.id")
     List<Long> primeirosIds(Pageable pageable);
 
@@ -23,7 +22,7 @@ public interface PedidoLazyRepository extends JpaRepository<PedidoLazy, Long> {
             + "where p.id in :ids order by p.id")
     List<PedidoLazy> comJoinFetch(@Param("ids") List<Long> ids);
 
-    // ---- Otimizacao 2: projecao DTO (1 query, so as colunas necessarias, contagem no banco) ----
+    // O banco conta os itens na mesma consulta que monta o resumo.
     @Query("select new br.edu.uva.otimizacao.dto.PedidoResumoDTO(p.id, c.nome, p.dataPedido, p.status, "
             + "p.valorTotal, count(i.id)) "
             + "from PedidoLazy p join p.cliente c left join p.itens i "

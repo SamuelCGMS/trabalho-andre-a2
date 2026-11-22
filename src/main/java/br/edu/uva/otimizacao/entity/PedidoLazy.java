@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Pedido com carregamento SOB DEMANDA (LAZY) de cliente e itens. */
 @Entity
 @Table(name = "pedido")
 public class PedidoLazy extends PedidoBase {

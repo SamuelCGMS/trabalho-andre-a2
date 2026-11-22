@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Campos comuns. As subclasses mapeiam a MESMA tabela "pedido" mudando apenas o FetchType. */
+/** As versões LAZY e EAGER leem a mesma tabela de pedidos para a comparação. */
 @MappedSuperclass
 public abstract class PedidoBase {
     @Id

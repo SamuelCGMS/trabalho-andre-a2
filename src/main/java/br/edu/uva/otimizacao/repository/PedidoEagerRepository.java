@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PedidoEagerRepository extends JpaRepository<PedidoEager, Long> {
 
-    /** JPQL: o Hibernate dispara a query principal e DEPOIS selects adicionais para os EAGER. */
+    /** Nesta consulta, o Hibernate carrega as relações EAGER com SELECTs adicionais. */
     @Query("select p from PedidoEager p order by p.id")
     List<PedidoEager> primeiros(Pageable pageable);
 }

@@ -26,14 +26,14 @@ public class ProdutoController {
         this.ttlPadraoSegundos = ttlPadraoSegundos;
     }
 
-    /** Cenario A: sempre consulta o banco. */
+    /** Cenário A: sempre consulta o banco. */
     @GetMapping("/{id}/sem-cache")
     public ResponseEntity<RespostaCache<ProdutoDTO>> semCache(@PathVariable Long id) {
         RespostaCache<ProdutoDTO> r = cache.semCache(() -> service.buscar(id));
         return ResponseEntity.ok().header("X-Cache", "BYPASS").body(r);
     }
 
-    /** Cenario B: Redis primeiro. ?ttl=N (segundos) permite sobrescrever o TTL nos experimentos. */
+    /** Consulta o Redis primeiro. O parâmetro ttl define a duração da chave quando ela é gravada. */
     @GetMapping("/{id}/com-cache")
     public ResponseEntity<RespostaCache<ProdutoDTO>> comCache(@PathVariable Long id,
                                                                @RequestParam(required = false) Long ttl) {
@@ -44,8 +44,8 @@ public class ProdutoController {
     }
 
     /**
-     * Atualiza o produto no banco. Por padrao INVALIDA o cache (produto e estatisticas da categoria).
-     * Com ?invalidarCache=false o cache fica desatualizado ate o TTL expirar (demonstra o risco).
+     * Por padrão, invalida o cache do produto e das estatísticas da categoria.
+     * Use invalidarCache=false para demonstrar como uma resposta antiga pode persistir até o TTL expirar.
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long id,

@@ -10,7 +10,7 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // O lado "pedido" da relacao e mapeado nas entidades PedidoLazy/PedidoEager (@JoinColumn pedido_id).
+    // O lado "pedido" da relação é mapeado nas entidades PedidoLazy/PedidoEager (@JoinColumn pedido_id).
     @Column(name = "produto_id")
     private Long produtoId;
 

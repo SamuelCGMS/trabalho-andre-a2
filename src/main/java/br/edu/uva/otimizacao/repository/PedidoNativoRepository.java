@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Consultas SQL NATIVAS (especificas do PostgreSQL) - usadas na comparacao com JPQL. */
 @Repository
 public class PedidoNativoRepository {
 

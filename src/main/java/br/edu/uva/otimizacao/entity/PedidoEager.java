@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Pedido com carregamento ANTECIPADO (EAGER) de cliente e itens. */
 @Entity
 @Table(name = "pedido")
 public class PedidoEager extends PedidoBase {

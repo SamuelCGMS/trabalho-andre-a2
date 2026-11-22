@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Cada metodo e uma ESTRATEGIA de carregamento. O mapeamento para DTO acontece DENTRO da transacao
- * (a sessao do Hibernate precisa estar aberta para que o LAZY consiga buscar dados sob demanda).
+ * O mapeamento para DTO fica dentro da transação para o Hibernate poder carregar os dados sob demanda.
  */
 @Service
 public class PedidoExperimentoService {
@@ -33,7 +32,7 @@ public class PedidoExperimentoService {
         this.nativoRepo = nativoRepo;
     }
 
-    /** LAZY: 1 query dos pedidos + 1 por cliente + 1 por colecao de itens (problema N+1). */
+    /** LAZY pode gerar N+1. A busca dos itens só acontece quando eles entram na resposta. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoDetalheDTO> lazy(int limit, boolean incluirItens) {
         long t0 = System.nanoTime();
@@ -42,7 +41,7 @@ public class PedidoExperimentoService {
         return detalhes("LAZY", limit, t0, pedidos, incluirItens);
     }
 
-    /** EAGER: o Hibernate carrega cliente e itens SEMPRE, mesmo quando o endpoint nao usa os itens. */
+    /** EAGER carrega cliente e itens mesmo quando a resposta omite os itens. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoDetalheDTO> eager(int limit, boolean incluirItens) {
         long t0 = System.nanoTime();
@@ -51,7 +50,7 @@ public class PedidoExperimentoService {
         return detalhes("EAGER", limit, t0, pedidos, incluirItens);
     }
 
-    /** OTIMIZADA 1: JOIN FETCH (2 queries: ids da pagina + pedidos com cliente e itens). */
+    /** Busca os IDs da página e depois carrega os pedidos com cliente e itens. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoDetalheDTO> joinFetch(int limit) {
         long t0 = System.nanoTime();
@@ -61,7 +60,7 @@ public class PedidoExperimentoService {
         return detalhes("JOIN FETCH", limit, t0, pedidos, true);
     }
 
-    /** OTIMIZADA 2: projecao DTO via JPQL (1 query, sem hidratar entidades). */
+    /** A consulta JPQL monta o DTO sem carregar as entidades. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoResumoDTO> dto(int limit) {
         long t0 = System.nanoTime();
@@ -71,7 +70,7 @@ public class PedidoExperimentoService {
                 dados.size(), 0, dados);
     }
 
-    /** OTIMIZADA 3: SQL nativo (1 query, mesma ideia do DTO, porem presa ao PostgreSQL). */
+    /** O SQL nativo monta o mesmo resumo usando a sintaxe do PostgreSQL. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoResumoDTO> dtoNativo(int limit) {
         long t0 = System.nanoTime();
@@ -81,7 +80,7 @@ public class PedidoExperimentoService {
                 dados.size(), 0, dados);
     }
 
-    /** Consulta do experimento de INDICE (WHERE cliente_id ORDER BY data_pedido DESC). */
+    /** Filtra por cliente, com pedidos mais recentes primeiro e desempate pelo ID. */
     @Transactional(readOnly = true)
     public ResultadoExperimento<PedidoSimplesDTO> doCliente(Long clienteId) {
         long t0 = System.nanoTime();
@@ -91,11 +90,10 @@ public class PedidoExperimentoService {
                 dados.size(), 0, dados);
     }
 
-    // ---------------- mapeamento ----------------
     private ResultadoExperimento<PedidoDetalheDTO> detalhes(String estrategia, int limit, long t0,
                                                             List<? extends PedidoBase> pedidos, boolean incluirItens) {
-        // O acesso a getCliente()/getItens() e o que DISPARA as queries adicionais no modo LAZY.
         List<PedidoDetalheDTO> dados = pedidos.stream().map(p -> mapear(p, incluirItens)).toList();
+        // Conta os itens já carregados, mesmo quando o JSON da resposta os omite.
         long itens = pedidos.stream()
                 .map(PedidoBase::getItens)
                 .filter(Hibernate::isInitialized)

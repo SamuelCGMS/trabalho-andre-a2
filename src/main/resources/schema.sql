@@ -1,8 +1,7 @@
--- Esquema do dominio: Categoria <- Produto <- ItemPedido -> Pedido -> Cliente
--- Obs.: PostgreSQL NAO cria indice automatico em chave estrangeira.
--- Indice de BASELINE (usado por LAZY/EAGER/JOIN FETCH para buscar itens de um pedido):
---   idx_item_pedido_pedido
--- O indice do EXPERIMENTO (idx_pedido_cliente_data) NAO existe aqui: e criado depois.
+-- Esquema do domínio: Categoria <- Produto <- ItemPedido -> Pedido -> Cliente
+-- O PostgreSQL não cria índices para as chaves estrangeiras automaticamente.
+-- idx_item_pedido_pedido faz parte da base e ajuda na busca de itens por pedido.
+-- idx_pedido_cliente_data é criado separadamente para medir o efeito dele.
 
 CREATE TABLE IF NOT EXISTS categoria (
     id   BIGSERIAL PRIMARY KEY,

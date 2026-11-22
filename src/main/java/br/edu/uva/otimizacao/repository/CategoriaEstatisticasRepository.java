@@ -17,8 +17,8 @@ public class CategoriaEstatisticasRepository {
     private EntityManager em;
 
     /**
-     * Agregacao pesada: percorre item_pedido (~300 mil linhas) fazendo JOIN com produto.
-     * Nao ha indice em produto.categoria_id nem item_pedido.produto_id => custo alto => bom para cache.
+     * Para calcular as vendas da categoria, a consulta cruza produtos, pedidos e itens.
+     * Na base de teste, os itens somam cerca de 300 mil linhas. O cache evita repetir essa agregação.
      */
     @SuppressWarnings("unchecked")
     public Optional<CategoriaEstatisticasDTO> calcular(Long categoriaId) {

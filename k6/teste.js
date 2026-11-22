@@ -85,7 +85,7 @@ export function setup() {
     return;
   }
 
-  // Aquece a agregação e o pool com a mesma leitura em todas as variantes.
+  // Faz as mesmas consultas sem Redis para aquecer o PostgreSQL e o pool em todas as variantes.
   aquecer(20, true);
   admin('POST', 'cache/limpar');
   const preenchido = variante === 'quente' || variante === 'ttl-curto';
@@ -124,6 +124,7 @@ export function handleSummary(dados) {
   const metrica = nome => dados.metrics[nome]?.values || {};
   const http = metrica('http_req_duration{fase:medicao}');
   const requisicoes = metrica('http_reqs{fase:medicao}').count || 0;
+  // A vazão inclui o tempo das requisições que terminam após a duração prevista da rodada.
   const segundos = Math.max(duracao * 1000, metrica('termino_medicao_ms').max || 0) / 1000;
   const resultado = {
     cenario, variante, vus,

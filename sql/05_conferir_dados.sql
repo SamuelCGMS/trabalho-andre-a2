@@ -1,4 +1,4 @@
--- Conferir volume de dados e indices existentes.
+-- Conferir volume de dados e índices existentes.
 SELECT 'categoria' AS tabela, COUNT(*) FROM categoria
 UNION ALL SELECT 'cliente', COUNT(*) FROM cliente
 UNION ALL SELECT 'produto', COUNT(*) FROM produto
